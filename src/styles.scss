@@ -1,39 +1,149 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// src/styles.scss
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Angular Material setup
+// @use imports Material's Sass API so we can define custom themes
+// ─────────────────────────────────────────────────────────────────────────────
 @use '@angular/material' as mat;
 
-html {
-  height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
+// define-palette turns a Material color map into a usable palette.
+// The three numbers are: default shade, lighter shade, darker shade.
+$prismboard-primary: mat.define-palette(mat.$cyan-palette, 400, 200, 700);
+$prismboard-accent:  mat.define-palette(mat.$amber-palette, 500);
+$prismboard-warn:    mat.define-palette(mat.$red-palette);
+
+// define-dark-theme bundles our palettes into a complete Material dark theme
+$prismboard-theme: mat.define-dark-theme((
+  color: (
+    primary: $prismboard-primary,
+    accent:  $prismboard-accent,
+    warn:    $prismboard-warn,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+// Apply the theme to ALL Material components at once
+@include mat.all-component-themes($prismboard-theme);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CSS Custom Properties (Design Tokens)
+// These are CSS variables — defined once here, reused everywhere.
+// If you want to change the app's dark background, you change it in ONE place.
+// ─────────────────────────────────────────────────────────────────────────────
+:root {
+  // Background layers — each slightly lighter to create depth
+  --bg-primary:    #0d1117;   // darkest — page background
+  --bg-secondary:  #161b22;   // sidebar, inputs
+  --bg-card:       #1c2128;   // cards
+  --bg-card-hover: #21262d;   // card hover state
+
+  // Borders and text hierarchy
+  --border-color:   #30363d;  // subtle borders
+  --text-primary:   #e6edf3;  // main readable text
+  --text-secondary: #8b949e;  // labels, captions
+  --text-muted:     #484f58;  // placeholders, disabled
+
+  // Accent colors — each has a semantic meaning
+  --accent-cyan:   #38bdf8;   // primary actions, links
+  --accent-green:  #3fb950;   // success, offers
+  --accent-amber:  #d29922;   // warnings, interviews
+  --accent-red:    #f85149;   // errors, rejections
+  --accent-purple: #a371f7;   // phone screens, special
+
+  // Chart colors — used consistently across all charts
+  --chart-1: #38bdf8;
+  --chart-2: #3fb950;
+  --chart-3: #d29922;
+  --chart-4: #f85149;
+  --chart-5: #a371f7;
+
+  // Spacing & shape
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+
+  // Consistent animation timing
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+// ─────────────────────────────────────────────────────────────────────────────
+// Global Reset
+// Browsers add default margins and padding. We remove them so our
+// design looks consistent across Chrome, Firefox, Safari, etc.
+// ─────────────────────────────────────────────────────────────────────────────
+*, *::before, *::after {
+  box-sizing: border-box; // padding/border included in element width (more intuitive)
   margin: 0;
-  height: 100%;
+  padding: 0;
 }
-/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;                          // allow full-height layouts
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;   // crisper text rendering on Mac
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Custom Scrollbar
+// Browsers let you style scrollbars with ::-webkit-scrollbar pseudo-elements
+// ─────────────────────────────────────────────────────────────────────────────
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+  &:hover { background: var(--text-muted); }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable Utility Classes
+// Applied directly in HTML: <div class="card"> instead of repeating styles
+// ─────────────────────────────────────────────────────────────────────────────
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition);
+  &:hover { border-color: var(--text-muted); } // subtle hover feedback
+}
+
+// Text color utilities
+.text-primary   { color: var(--text-primary)   !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-muted     { color: var(--text-muted)     !important; }
+.text-cyan      { color: var(--accent-cyan)    !important; }
+.text-green     { color: var(--accent-green)   !important; }
+.text-amber     { color: var(--accent-amber)   !important; }
+.text-red       { color: var(--accent-red)     !important; }
+
+// Prevents text from overflowing its container — shows "..." instead
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CSS Animations
+// @keyframes defines reusable animation sequences.
+// They're applied to elements with the animation property.
+// ─────────────────────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); } // start invisible + shifted down
+  to   { opacity: 1; transform: translateY(0); }   // end visible + normal position
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }   // fully visible at start and end
+  50%       { opacity: 0.4; } // half visible in the middle
+}
+
+.animate-fade-in { animation: fadeIn 300ms ease forwards; }
+.animate-pulse   { animation: pulse 2s ease infinite; }
