@@ -1,36 +1,19 @@
-// src/styles.scss
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Angular Material setup
-// @use imports Material's Sass API so we can define custom themes
-// ─────────────────────────────────────────────────────────────────────────────
 @use '@angular/material' as mat;
 
-// define-palette turns a Material color map into a usable palette.
-// The three numbers are: default shade, lighter shade, darker shade.
-$prismboard-primary: mat.define-palette(mat.$cyan-palette, 400, 200, 700);
-$prismboard-accent:  mat.define-palette(mat.$amber-palette, 500);
-$prismboard-warn:    mat.define-palette(mat.$red-palette);
+html {
+  color-scheme: dark;
 
-// define-dark-theme bundles our palettes into a complete Material dark theme
-$prismboard-theme: mat.define-dark-theme((
-  color: (
-    primary: $prismboard-primary,
-    accent:  $prismboard-accent,
-    warn:    $prismboard-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0,
-));
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0
+  ));
+}
 
-// Apply the theme to ALL Material components at once
-@include mat.all-component-themes($prismboard-theme);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CSS Custom Properties (Design Tokens)
-// These are CSS variables — defined once here, reused everywhere.
-// If you want to change the app's dark background, you change it in ONE place.
-// ─────────────────────────────────────────────────────────────────────────────
 :root {
   // Background layers — each slightly lighter to create depth
   --bg-primary:    #0d1117;   // darkest — page background
